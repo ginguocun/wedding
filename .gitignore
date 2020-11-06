@@ -1,0 +1,8 @@
+venv
+*.pyc
+*.log
+*.pot
+.idea
+__pycache__
+db.sqlite3
+settings.py
