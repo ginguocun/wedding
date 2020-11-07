@@ -69,9 +69,9 @@ class FamilyMemberAdmin(admin.ModelAdmin):
 
 @admin.register(Table)
 class TableAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'name', 'desc', 'max_persons', 'related_family']
+    list_display = ['pk', 'name', 'desc', 'max_persons', 'related_family', 'related_session']
     list_display_links = ['pk', 'name']
-    list_filter = ['related_family']
+    list_filter = ['related_family', 'related_session']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request).filter(
@@ -89,6 +89,7 @@ class InvitedPeopleAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'mobile', 'related_family', 'table', 'category', 'persons', 'has_gift', 'percentage']
     list_display_links = ['pk', 'name']
     list_filter = ['category', 'related_family', 'has_gift']
+    filter_horizontal = ['session']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request).filter(related_family__main_account_id=request.user.id)

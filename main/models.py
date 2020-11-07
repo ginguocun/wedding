@@ -100,6 +100,30 @@ class FamilyMember(models.Model):
         )
 
 
+class Session(models.Model):
+    name = models.CharField(_('名称'), max_length=255, null=True)
+    date = models.DateTimeField(_('日期时间'), null=True, blank=True)
+    address = models.TextField(_('地址'), null=True, blank=True, max_length=200)
+    related_family = models.ForeignKey(
+        Family,
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name=_('关联家庭')
+    )
+
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = _('宴席')
+        verbose_name_plural = _('宴席')
+
+    def __str__(self):
+        return "{0}".format(
+            self.name,
+        )
+
+
 class Table(models.Model):
     name = models.CharField(_('名称'), max_length=255, null=True)
     desc = models.TextField(_('描述'), max_length=1000, null=True, blank=True)
@@ -108,6 +132,12 @@ class Table(models.Model):
         Family,
         on_delete=models.CASCADE,
         verbose_name=_('关联家庭')
+    )
+    related_session = models.ForeignKey(
+        Session,
+        on_delete=models.CASCADE,
+        null=True,
+        verbose_name=_('宴席')
     )
 
     objects = models.Manager()
@@ -166,6 +196,10 @@ class InvitedPeople(models.Model):
         blank=True,
         verbose_name=_('归类')
     )
+    session = models.ManyToManyField(
+        Session,
+        verbose_name=_('受邀宴席'),
+    )
     persons = models.SmallIntegerField(_('人数'),  default=1)
     has_gift = models.BooleanField(_('收礼金'), null=True)
     gift_amount_pred = models.IntegerField(_('礼金金额预计'), null=True, blank=True)
@@ -184,3 +218,6 @@ class InvitedPeople(models.Model):
         return "{0}".format(
             self.name,
         )
+
+
+
