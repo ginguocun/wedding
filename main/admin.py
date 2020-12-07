@@ -35,6 +35,7 @@ class WxUserAdmin(UserAdmin):
 
 @admin.register(Family)
 class FamilyAdmin(admin.ModelAdmin):
+    search_fields = ['name']
     readonly_fields = ['main_account']
     list_display = ['pk', 'name', 'total_invited_people']
 
@@ -72,6 +73,7 @@ class TableAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'desc', 'max_persons', 'related_family', 'related_session']
     list_display_links = ['pk', 'name']
     list_filter = ['related_family', 'related_session']
+    search_fields = ['name']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request).filter(
@@ -90,6 +92,8 @@ class InvitedPeopleAdmin(admin.ModelAdmin):
     list_display_links = ['pk', 'name']
     list_filter = ['category', 'related_family', 'has_gift']
     filter_horizontal = ['session']
+    autocomplete_fields = ['related_family', 'table', 'category']
+    search_fields = ['name']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request).filter(related_family__main_account_id=request.user.id)
@@ -101,6 +105,19 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['pk', 'name', 'related_family']
     list_display_links = ['pk', 'name']
     list_filter = ['related_family']
+    search_fields = ['name']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request).filter(related_family__main_account_id=request.user.id)
+        return qs
+
+
+@admin.register(Session)
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ['pk', 'name', 'date', 'address', 'related_family', 'amount']
+    list_display_links = ['pk', 'name']
+    list_filter = ['related_family']
+    search_fields = ['name']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request).filter(related_family__main_account_id=request.user.id)

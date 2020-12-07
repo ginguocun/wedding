@@ -113,6 +113,14 @@ class Session(models.Model):
 
     objects = models.Manager()
 
+    def amount_property(self):
+        total_persons = InvitedPeople.objects.filter(session=self.pk).aggregate(total_persons=Sum('persons'))
+        return total_persons['total_persons']
+
+    amount_property.short_description = "受邀人数"
+
+    amount = property(amount_property)
+
     class Meta:
         ordering = ['name']
         verbose_name = _('宴席')
@@ -201,6 +209,7 @@ class InvitedPeople(models.Model):
         verbose_name=_('受邀宴席'),
     )
     persons = models.SmallIntegerField(_('人数'),  default=1)
+    rooms = models.SmallIntegerField(_('房间数'), default=0)
     has_gift = models.BooleanField(_('收礼金'), null=True)
     gift_amount_pred = models.IntegerField(_('礼金金额预计'), null=True, blank=True)
     gift_amount_real = models.IntegerField(_('礼金金额实际'), null=True, blank=True)
